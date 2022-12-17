@@ -6,13 +6,13 @@ class Shapes{
     public static final float consoleHeight = Main.consoleHeight;
     public static final float consoleLength = Main.consoleLength;
     public static final float ratio = Main.symbolRatio;
-    public static final int R = 10;
+    public static final int R = 6;
     public static float widthLimitFactor;
     public static float heightLimitFactor;
     public static float depthLimitFactor;
-    private static float center_x = (int) (consoleWidth/2);
-    private static float center_y = (int) (consoleHeight*ratio/2);
-    private static float center_z = (int) (consoleLength/2);
+    public static final float center_x = (int) (consoleWidth/2);
+    public static final float center_y = (int) (consoleHeight*ratio/2);
+    public static final float center_z = (int) (consoleLength/2);
     public static boolean inSomeShape(Main.allShapes shape, float x, float y, float z){
         switch (shape){
             case Square -> {
@@ -86,8 +86,7 @@ class Shapes{
         depthLimitFactor = (consoleLength - R);
 
         float r = R/1.5f;
-
-        double distance = Math.sqrt(Math.pow(R + r - Math.sqrt(Math.pow(x - center_x, 2) + Math.pow(y - center_y, 2)), 2) + Math.pow(z - center_z, 1.9));
+        double distance = Math.sqrt(Math.pow(R + r - Math.sqrt(Math.pow(x - center_x, 2) + Math.pow(y - center_y, 2)), 2) + Math.pow(z - center_z, 2));
         return (int) distance == R;
     }
 }

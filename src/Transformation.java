@@ -1,5 +1,7 @@
 import java.util.HashMap;
 
+import static java.lang.Math.*;
+
 public class Transformation {
     public static final float consoleWidth = Main.consoleWidth;
     public static final float consoleHeight = Main.consoleHeight;
@@ -7,41 +9,26 @@ public class Transformation {
     public static float current_x = 0;
     public static float current_y = 0;
     public static float current_z = 0;
+    private static double degreesToRadians = PI/180;
+    public static double currentRotation_x = 0;
+    public static double currentRotation_y = 0;
+    public static double currentRotation_z = 0;
+    private static final float center_x = Shapes.center_x;
+    private static final float center_y = Shapes.center_y;
+    private static final float center_z = Shapes.center_z;
     private static final char[][] pixels = new char[(int) consoleWidth][(int) consoleHeight];
     private static char[][][] shape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
     private static final char[][][] movedShape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
     private static final char[][][] finalShape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
-    private static HashMap<Main.allMovements, Float> movement = new HashMap<>();
-    public static char[][] transformTo2D(char[][][] Shape, HashMap<Main.allMovements, Float> Movement){
+    public static void updateShape(char[][][] Shape){
         shape = Shape;
-        movement = Movement;
-        assignMovement();
+    }
+    public static char[][] transformTo2D(){
         fillEmpty();
         moveObject();
         rotateObject();
         render();
         return pixels;
-    }
-
-    private static void assignMovement(){
-        if (movement.get(Main.allMovements.Left)!=null){
-            moveLeft(movement.get(Main.allMovements.Left));
-        }
-        if (movement.get(Main.allMovements.Right)!=null){
-            moveRight(movement.get(Main.allMovements.Right));
-        }
-        if (movement.get(Main.allMovements.Up)!=null){
-            moveUp(movement.get(Main.allMovements.Up));
-        }
-        if (movement.get(Main.allMovements.Down)!=null){
-            moveDown(movement.get(Main.allMovements.Down));
-        }
-        if (movement.get(Main.allMovements.Forward)!=null){
-            moveForward(movement.get(Main.allMovements.Forward));
-        }
-        if (movement.get(Main.allMovements.Backward)!=null){
-            moveBackward(movement.get(Main.allMovements.Backward));
-        }
     }
     private static void fillEmpty(){
         for (int x = 0; x < consoleWidth; x++) {
@@ -70,12 +57,43 @@ public class Transformation {
             for (int x = 0; x < consoleWidth; x++) {
                 for (int y = 0; y < consoleHeight; y++) {
                     if (movedShape[x][y][z] != ' '){
-                        finalShape[(x)][(y)][(z)] = movedShape[x][y][z];
+                        Point point = new Point(x, y, z);
+
+                        point = rotateOnX(point);
+                        point = rotateOnY(point);
+                        point = rotateOnZ(point);
+
+                        int final_x = (int) point.x;
+                        int final_y = (int) point.y;
+                        int final_z = (int) point.z;
+                        finalShape[(final_x)][final_y][(final_z)] = movedShape[x][y][z];
                     }
                 }
             }
         }
     }
+    private static Point rotateOnX(Point point){
+        double theta = currentRotation_x*degreesToRadians;
+        double final_x = point.x;
+        double final_y = (point.y-center_y) * cos(theta) - (point.z-center_z) * sin(theta);
+        double final_z = (point.y-center_y) * sin(theta) + (point.z-center_z) * cos(theta);
+        return new Point(final_x, final_y+center_y, final_z + center_z);
+    }
+    private static Point rotateOnY(Point point){
+        double theta = currentRotation_y*degreesToRadians;
+        double final_x = (point.x - center_x) * cos(theta) - (point.z - center_z) * sin(theta);
+        double final_y = point.y;
+        double final_z = (point.x - center_x) * sin(theta) + (point.z - center_z) * cos(theta);
+        return new Point(final_x + center_x, final_y, final_z + center_z);
+    }
+    private static Point rotateOnZ(Point point){
+        double theta = currentRotation_z*degreesToRadians;
+        double final_x = (point.x - center_x) * Math.cos(theta) - (point.y-center_y) * Math.sin(theta);
+        double final_y = (point.x - center_x) * Math.sin(theta) + (point.y-center_y) * Math.cos(theta);
+        double final_z = point.z;
+        return new Point(final_x + center_x, final_y + center_y, final_z);
+    }
+
     private static void render(){
         for (int z = (int) consoleLength-1; z > -1; z--){
             for (int x = 0; x < consoleWidth; x++) {
@@ -88,36 +106,55 @@ public class Transformation {
         }
     }
 
-    private static void moveLeft(float speed){
+    public static void moveLeft(float speed){
         if (Math.abs(current_x) < Shapes.widthLimitFactor) {
             current_x -= speed / Main.FPS;
         }
     }
-    private static void moveRight(float speed){
+    public static void moveRight(float speed){
         if (Math.abs(current_x) < Shapes.widthLimitFactor) {
             current_x += speed / Main.FPS;
         }
     }
-    private static void moveUp(float speed){
+    public static void moveUp(float speed){
         if (Math.abs(current_y) < Shapes.heightLimitFactor) {
             current_y -= speed / Main.FPS;
         }
     }
-    private static void moveDown(float speed){
+    public static void moveDown(float speed){
         if (Math.abs(current_y) < Shapes.heightLimitFactor) {
             current_y += speed / Main.FPS;
         }
     }
-    private static void moveForward(float speed){
+    public static void moveForward(float speed){
         if (Math.abs(current_z) < Shapes.depthLimitFactor) {
             current_z -= speed / Main.FPS;
         }
     }
-    private static void moveBackward(float speed){
+    public static void moveBackward(float speed){
         if (Math.abs(current_z) < Shapes.depthLimitFactor) {
             current_z += speed / Main.FPS;
         }
     }
+    public static void rotateOnX(float speed){
+        currentRotation_x +=speed;
+    }
+    public static void rotateOnY(float speed){
+        currentRotation_y +=speed;
+    }
+    public static void rotateOnZ(float speed){
+        currentRotation_z +=speed;
+    }
+}
 
+class Point{
+    final double x;
+    final double y;
+    final double z;
+    Point(double x, double y, double z){
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
 }

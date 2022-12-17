@@ -9,7 +9,7 @@ public class Main {
      * Right now it is absolutely useless*/
     public static final float consoleWidth = 120;
     public static final float consoleHeight = 28;
-    public static final float consoleLength = 30;
+    public static final float consoleLength = 50;
 
     /** Your terminal symbols height and width ratio*/
     public static final float symbolRatio = 18f/9f;
@@ -18,16 +18,13 @@ public class Main {
     /** Shape of Object you want to get, IF YOU ARE CHANGING THE SHAPE, CHECK IF IT'S 2D OR 3D, and change some values after*/
     public static final allShapes shape = allShapes.Torus;
 
-private static final char[] symbols = new char[]{'.',',','-','~','"',':',';','=','!','*','№','%','#','$','&','@',};
+public static final char[] symbols = new char[]{'.',',','-','~','"',':',';','=','!','*','№','%','#','$','&','@',};
 
 private static final char[][][] shapePixels = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
 
 private static final Scanner scanner = new Scanner(System.in);
 public static final float depthRatio = consoleLength / symbols.length;
-private static final boolean debug = false;
-
-private static HashMap<allMovements, Float> movement = new HashMap<>();
-
+private static final boolean debug = true;
 
 public enum allShapes{
     Square, //2d
@@ -36,15 +33,6 @@ public enum allShapes{
     Sphere, //3d
     Torus, //3d
 }
-public enum allMovements{
-    Left, //2d
-    Right, //2d
-    Up, //2d
-    Down, //2d
-    Forward, //3d
-    Backward, //3d
-}
-
 
     Main(){
         MakeShape();
@@ -55,6 +43,7 @@ public enum allMovements{
             refresh();
         }
     }
+
     private void MakeShape(){
         for (int z = 0; z < consoleLength; z++) {
             for (int y = 0; y < consoleHeight; y++) {
@@ -68,10 +57,10 @@ public enum allMovements{
                 }
             }
         }
+        Transformation.updateShape(shapePixels);
     }
     private static void clear() {
         try {
-            movement = new HashMap<>();
             System.out.print("\u001b[H");
             System.out.flush();
         } catch (final Exception e) {
@@ -81,14 +70,14 @@ public enum allMovements{
     }
 
     private static void move(){
-
+        Transformation.rotateOnX(1f);
     }
 
     private static void draw(){
         if (debug){
-            System.out.print("x:" + Transformation.current_x+" y:" + Transformation.current_y+" z:" + Transformation.current_z);
+            System.out.print("x:" + Transformation.current_x+" y:" + Transformation.current_y+" z:" + Transformation.current_z+ " Rx: " + Transformation.currentRotation_x + " Ry: " + Transformation.currentRotation_y + " Rz: " + Transformation.currentRotation_z);
         }
-        char[][] pixels = Transformation.transformTo2D(shapePixels, movement);
+        char[][] pixels = Transformation.transformTo2D();
         for (int y = 0; y < consoleHeight; y++) {
             for (int x = 0; x < consoleWidth; x++) {
                 System.out.print(pixels[x][y]);
