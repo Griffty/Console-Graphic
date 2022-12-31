@@ -1,1 +1,0 @@
-wt java Main

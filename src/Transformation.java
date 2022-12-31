@@ -1,27 +1,33 @@
-import java.util.HashMap;
 
 import static java.lang.Math.*;
 
 public class Transformation {
-    public static final float consoleWidth = Main.consoleWidth;
-    public static final float consoleHeight = Main.consoleHeight;
-    public static final float consoleLength = Main.consoleLength;
+    public static float consoleWidth = 120;
+    public static float consoleHeight = 28;
+    public static float consoleLength = 60;
     public static float current_x = 0;
     public static float current_y = 0;
     public static float current_z = 0;
-    private static double degreesToRadians = PI/180;
+    private static final double degreesToRadians = PI/180;
     public static double currentRotation_x = 0;
     public static double currentRotation_y = 0;
     public static double currentRotation_z = 0;
-    private static final float center_x = Shapes.center_x;
-    private static final float center_y = Shapes.center_y;
-    private static final float center_z = Shapes.center_z;
-    private static final char[][] pixels = new char[(int) consoleWidth][(int) consoleHeight];
-    private static char[][][] shape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
-    private static final char[][][] movedShape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
-    private static final char[][][] finalShape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
-    public static void updateShape(char[][][] Shape){
+    private static float center_x;
+    public static float center_y;
+    public static float center_z;
+    public static final float padding_y = consoleHeight / 4;
+    private static char[][] pixels;
+    private static char[][][] shape;
+    private static char[][][] movedShape;
+    private static char[][][] finalShape;
+    public static void update(char[][][] Shape){
         shape = Shape;
+        pixels = new char[(int) consoleWidth][(int) consoleHeight];
+        movedShape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
+        finalShape = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
+        center_x = (int) (consoleWidth/2);
+        center_y = (int) (consoleHeight/2);
+        center_z = (int) (consoleLength/2);
     }
     public static char[][] transformTo2D(){
         fillEmpty();
@@ -64,7 +70,7 @@ public class Transformation {
                         point = rotateOnZ(point);
 
                         int final_x = (int) point.x;
-                        int final_y = (int) point.y;
+                        int final_y = (int) (point.y + padding_y);
                         int final_z = (int) point.z;
                         finalShape[(final_x)][final_y][(final_z)] = movedShape[x][y][z];
                     }
@@ -88,10 +94,10 @@ public class Transformation {
     }
     private static Point rotateOnZ(Point point){
         double theta = currentRotation_z*degreesToRadians;
-        double final_x = (point.x - center_x) * Math.cos(theta) - (point.y-center_y) * Math.sin(theta);
-        double final_y = (point.x - center_x) * Math.sin(theta) + (point.y-center_y) * Math.cos(theta);
+        double final_x = (point.x - center_x) * Math.cos(theta) - (point.y-center_y) * Shapes.ratio * Math.sin(theta);
+        double final_y = (point.x - center_x) * Math.sin(theta) + (point.y-center_y) * Shapes.ratio * Math.cos(theta);
         double final_z = point.z;
-        return new Point(final_x + center_x, final_y + center_y, final_z);
+        return new Point(final_x + center_x, (final_y + center_y) / Shapes.ratio, final_z);
     }
 
     private static void render(){

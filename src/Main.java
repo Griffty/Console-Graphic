@@ -1,33 +1,23 @@
-import java.util.HashMap;
+
 import java.util.Scanner;
 
-/** If you don't know what you're doing, it's better to change only those parameters that contain comments*/
 
 public class Main {
-    /** Enter the number of rows and columns in your terminal,
-     * Length is depth, so since terminal literally has no depth, it can be any number.
-     * Right now it is absolutely useless*/
-    public static final float consoleWidth = 120;
-    public static final float consoleHeight = 28;
-    public static final float consoleLength = 50;
+public static float consoleWidth = 120;
+public static float consoleHeight = 28;
+public static float consoleLength = 60;
+public static float symbolRatio = 18f/9f;
+public static final int FPS = 25;
+public static allShapes shape = allShapes.Torus;
 
-    /** Your terminal symbols height and width ratio*/
-    public static final float symbolRatio = 18f/9f;
-    /** refresh time, you can put 0 to disable restriction*/
-    public static final int FPS = 25;
-    /** Shape of Object you want to get, IF YOU ARE CHANGING THE SHAPE, CHECK IF IT'S 2D OR 3D, and change some values after*/
-    public static final allShapes shape = allShapes.Torus;
+public static final char[] symbols = new char[]{'.',',','-','~','"',':',';','=','!','*','№','%','#','$','&','@'};
 
-public static final char[] symbols = new char[]{'.',',','-','~','"',':',';','=','!','*','№','%','#','$','&','@',};
-
-private static final char[][][] shapePixels = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
-
-private static final Scanner scanner = new Scanner(System.in);
-public static final float depthRatio = consoleLength / symbols.length;
-private static final boolean debug = true;
+    private static final Scanner scanner = new Scanner(System.in);
+public static float depthRatio;
+private static final boolean debug = false;
 
 public enum allShapes{
-    Square, //2d
+    Rectangle, //2d
     Circle, //2d
     Annulus, //2d
     Sphere, //3d
@@ -35,6 +25,7 @@ public enum allShapes{
 }
 
     Main(){
+        updateSettings();
         MakeShape();
         while (true) {
             clear();
@@ -43,8 +34,14 @@ public enum allShapes{
             refresh();
         }
     }
+    private void updateSettings(){
+        Settings.updateData();
+        Shapes.update();
+    }
 
     private void MakeShape(){
+        depthRatio = consoleLength / symbols.length;
+        char[][][] shapePixels = new char[(int) consoleWidth][(int) consoleHeight][(int) consoleLength];
         for (int z = 0; z < consoleLength; z++) {
             for (int y = 0; y < consoleHeight; y++) {
                 for (int x = 0; x < consoleWidth; x++) {
@@ -57,7 +54,7 @@ public enum allShapes{
                 }
             }
         }
-        Transformation.updateShape(shapePixels);
+        Transformation.update(shapePixels);
     }
     private static void clear() {
         try {
@@ -70,7 +67,7 @@ public enum allShapes{
     }
 
     private static void move(){
-        Transformation.rotateOnX(1f);
+        Transformation.rotateOnY(1f);
     }
 
     private static void draw(){
