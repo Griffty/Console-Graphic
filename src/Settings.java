@@ -143,47 +143,50 @@ public class Settings extends JFrame {
     public static void updateData(){
         File folder = new File(Folder);
         if (folder.mkdir()){System.out.println("Folder created");}
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(Folder + "settings.txt"));
-            String s = in.readLine();
-            Width = Integer.parseInt(s);
-            s = in.readLine();
-            Height = Integer.parseInt(s);
-            s = in.readLine();
-            Length = Integer.parseInt(s);
-            s = in.readLine();
-            Start_x = Integer.parseInt(s);
-            s = in.readLine();
-            Start_y = Integer.parseInt(s);
-            s = in.readLine();
-            Start_z = Integer.parseInt(s);
-            s = in.readLine();
-            Rotation_x = Integer.parseInt(s);
-            s = in.readLine();
-            Rotation_y = Integer.parseInt(s);
-            s = in.readLine();
-            Rotation_z = Integer.parseInt(s);
-            s = in.readLine();
-            R = Integer.parseInt(s);
-            s = in.readLine();
-            if (s.equals("18f/9f")){
-                ratio = 18f/9f;
-            }else {
-                System.out.print("Cannot update ration, set 18/9 as default");
+        File file = new File(Folder + "settings.txt");
+        if (file.exists()) {
+            try {
+                BufferedReader in = new BufferedReader(new FileReader(file));
+                String s = in.readLine();
+                Width = Integer.parseInt(s);
+                s = in.readLine();
+                Height = Integer.parseInt(s);
+                s = in.readLine();
+                Length = Integer.parseInt(s);
+                s = in.readLine();
+                Start_x = Integer.parseInt(s);
+                s = in.readLine();
+                Start_y = Integer.parseInt(s);
+                s = in.readLine();
+                Start_z = Integer.parseInt(s);
+                s = in.readLine();
+                Rotation_x = Integer.parseInt(s);
+                s = in.readLine();
+                Rotation_y = Integer.parseInt(s);
+                s = in.readLine();
+                Rotation_z = Integer.parseInt(s);
+                s = in.readLine();
+                R = Integer.parseInt(s);
+                s = in.readLine();
+                if (s.equals("18f/9f")) {
+                    ratio = 18f / 9f;
+                } else {
+                    System.out.print("Cannot update ration, set 18/9 as default");
+                }
+                s = in.readLine();
+                switch (s) {
+                    case "Rectangle" -> shape = Main.allShapes.Rectangle;
+                    case "Circle" -> shape = Main.allShapes.Circle;
+                    case "Annulus" -> shape = Main.allShapes.Annulus;
+                    case "Sphere" -> shape = Main.allShapes.Sphere;
+                    case "Torus" -> shape = Main.allShapes.Torus;
+                    default -> System.out.print("Error, cannot use this shape, set Torus as default");
+                }
+                moveData();
+            } catch (Exception e) {
+                System.out.print("Cannot update settings");
+                sc.nextLine();
             }
-            s = in.readLine();
-            switch (s){
-                case "Rectangle" -> shape = Main.allShapes.Rectangle;
-                case "Circle" -> shape = Main.allShapes.Circle;
-                case "Annulus" -> shape = Main.allShapes.Annulus;
-                case "Sphere" -> shape = Main.allShapes.Sphere;
-                case "Torus" -> shape = Main.allShapes.Torus;
-                default -> System.out.print("Error, cannot use this shape, set Torus as default");
-            }
-            moveData();
-        }catch (Exception e){
-            System.out.print("Cannot update settings");
-            sc.nextLine();
         }
     }
     private static void moveData(){

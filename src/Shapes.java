@@ -1,6 +1,3 @@
-
-/** A Utility class to describe the shapes and check if there is a pixels in it, it's better not to touch it**/
-
 class Shapes{
     public static float consoleWidth = 120;
     public static float consoleHeight = 28;

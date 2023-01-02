@@ -1,4 +1,3 @@
-
 import static java.lang.Math.*;
 
 public class Transformation {

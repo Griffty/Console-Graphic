@@ -1,6 +1,4 @@
-
 import java.util.Scanner;
-
 
 public class Main {
 public static float consoleWidth = 120;
@@ -9,13 +7,10 @@ public static float consoleLength = 60;
 public static float symbolRatio = 18f/9f;
 public static final int FPS = 25;
 public static allShapes shape = allShapes.Torus;
-
 public static final char[] symbols = new char[]{'.',',','-','~','"',':',';','=','!','*','№','%','#','$','&','@'};
-
-    private static final Scanner scanner = new Scanner(System.in);
+private static final Scanner scanner = new Scanner(System.in);
 public static float depthRatio;
 private static final boolean debug = false;
-
 public enum allShapes{
     Rectangle, //2d
     Circle, //2d
@@ -67,7 +62,6 @@ public enum allShapes{
     }
 
     private static void move(){
-        Transformation.rotateOnY(1f);
     }
 
     private static void draw(){
